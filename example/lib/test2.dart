@@ -8,7 +8,7 @@ import 'package:prefab_animations/event_animation/animations/horizontal_move_out
 import 'package:prefab_animations/event_animation/event_animation.dart';
 
 class Test2 extends StatefulWidget {
-  Test2({Key key}) : super(key: key);
+  Test2({Key? key}) : super(key: key);
 
   @override
   _Test2State createState() => _Test2State();
@@ -38,48 +38,46 @@ class _Test2State extends State<Test2> {
             children: [
               EventAnimation(
                 initAnimationBuilder: (controller, child) {
-                  return AppearAnimation(controller: controller, child: child,);
+                  return AppearAnimation(controller: controller!, child: child,);
                 },
-                child: Text("You can further combine animation", style: Theme.of(context).textTheme.title,)
+                child: Text("You can further combine animation", style: Theme.of(context).textTheme.titleMedium,)
               ),
               
               EventAnimation(
                 initAnimationBuilder: (controller, child) {
-                  return HorizontalMoveInAnimation(controller: controller, child: child,);
+                  return HorizontalMoveInAnimation(controller: controller!, child: child,);
                 },
                 onTapAnimationBuilder: (controller, child) {
-                  return BounceAnimation(controller: controller, child: child,);
+                  return BounceAnimation(controller: controller!, child: child,);
                 },
                 onEventAnimationBuilder: (controller, child) {
-                  return HorizontalMoveOutAnimation(controller: controller, child: child,);
+                  return HorizontalMoveOutAnimation(controller: controller!, child: child,);
                 },
                 onEventAnimationDuration: pageTransitionDuration,
-                eventStreamTrigger: changeNotifier.stream,
                 child: testCard("Option1"),
               ),
               EventAnimation(
                 initAnimationBuilder: (controller, child) {
-                  return HorizontalMoveInAnimation(controller: controller, child: child,);
+                  return HorizontalMoveInAnimation(controller: controller!, child: child,);
                 },
                 onTapAnimationBuilder: (controller, child) {
-                  return BounceAnimation(controller: controller, child: child,);
+                  return BounceAnimation(controller: controller!, child: child,);
                 },
                 onEventAnimationBuilder: (controller, child) {
-                  return HorizontalMoveOutAnimation(controller: controller, child: child,);
+                  return HorizontalMoveOutAnimation(controller: controller!, child: child,);
                 },
                 onEventAnimationDuration: pageTransitionDuration,
-                eventStreamTrigger: changeNotifier.stream,
                 child: testCard("Option2"),
               ),
               EventAnimation(
                 initAnimationBuilder: (controller, child) {
-                  return HorizontalMoveInAnimation(controller: controller, child: child,);
+                  return HorizontalMoveInAnimation(controller: controller!, child: child,);
                 },
                 onTapAnimationBuilder: (controller, child) {
-                  return BounceAnimation(controller: controller, child: child,);
+                  return BounceAnimation(controller: controller!, child: child,);
                 },
                 onEventAnimationBuilder: (controller, child) {
-                  return HorizontalMoveOutAnimation(controller: controller, child: child,);
+                  return HorizontalMoveOutAnimation(controller: controller!, child: child,);
                 },
                 onTap: (){
                   setState(() {
@@ -87,7 +85,6 @@ class _Test2State extends State<Test2> {
                   });
                 },
                 onEventAnimationDuration: pageTransitionDuration,
-                eventStreamTrigger: changeNotifier.stream,
                 child: testCard("tap to add"),
               ),
 
@@ -102,7 +99,7 @@ class _Test2State extends State<Test2> {
                   itemBuilder: (context, index) {
                     return EventAnimation(
                       initAnimationBuilder: (controller, child) {
-                        return AppearAnimation(controller: controller, child: child,);
+                        return AppearAnimation(controller: controller!, child: child,);
                       },
                       child: testCard("Test " + index.toString())
                     );
@@ -115,7 +112,7 @@ class _Test2State extends State<Test2> {
 
         floatingActionButton: EventAnimation(
           awaitAnimationBuilder: (controller, child) {
-            return BounceAnimation(controller: controller, child: child,);
+            return BounceAnimation(controller: controller!, child: child,);
           },
           child: FloatingActionButton(
             backgroundColor: Colors.red,

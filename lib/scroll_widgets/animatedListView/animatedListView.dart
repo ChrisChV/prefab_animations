@@ -1,6 +1,5 @@
 library prefab_list_animations;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:prefab_animations/measure/measureSize/measureSize.dart';
 import 'package:prefab_animations/progress_widgets/progress_indicators/point_circular_progress_indicator.dart';
@@ -10,31 +9,31 @@ import 'Constants/load_data_states.dart';
 import 'Constants/scrollAnimations.dart';
 
 class ItemsData {
-  List<double> itemsWidth;
-  List<double> itemsHeight;
-  List<double> startPositions;
-  double layoutHeight;
-  double layoutWidth;
+  late List<double> itemsWidth;
+  late List<double> itemsHeight;
+  late List<double?> startPositions;
+  double? layoutHeight;
+  double? layoutWidth;
 }
 
 class AnimatedListView extends StatefulWidget {
-  Duration scrollAnimationDelay;
-  Function onLoading;
-  double layoutHeight;
-  double layoutWidth;
+  Duration? scrollAnimationDelay;
+  Function? onLoading;
+  double? layoutHeight;
+  double? layoutWidth;
   int itemCount;
   bool animateOnTop;
   bool animateOnBottom;
   ScrollAnimations animationType;
   Widget Function(BuildContext context, int index) itemBuilder;
-  Widget progressIndicator;
-  Widget noMoreDataIndicator;
+  Widget? progressIndicator;
+  Widget? noMoreDataIndicator;
 
   AnimatedListView({
-    Key key,
+    Key? key,
     this.animationType = ScrollAnimations.IN_BOTH_SIDES,
-    @required this.itemCount,
-    @required this.itemBuilder,
+    required this.itemCount,
+    required this.itemBuilder,
     this.animateOnBottom = true,
     this.animateOnTop = false,
     this.layoutHeight,
@@ -51,18 +50,18 @@ class AnimatedListView extends StatefulWidget {
 
 class AnimatedListViewState extends State<AnimatedListView>
     with SingleTickerProviderStateMixin {
-  ScrollController controller;
+  ScrollController? controller;
   ValueNotifier<double> topOffsetNotifier = ValueNotifier<double>(0);
   bool isItemMeasured = false;
   ItemsData itemsData = ItemsData();
-  bool getHeightOnFirstBuild;
-  double bottomOverflow;
+  late bool getHeightOnFirstBuild;
+  late double bottomOverflow;
 
-  AnimationController dragAnimationController;
+  late AnimationController dragAnimationController;
   double dragWidgetHeight = 80;
 
   /// only Available whent the bottom is reached
-  double listHeight;
+  double? listHeight;
   bool bottomReached = false;
   bool isPulling = false;
   bool isReversing = false;
@@ -71,7 +70,7 @@ class AnimatedListViewState extends State<AnimatedListView>
 
   bool innerUpdate = false;
 
-  List<Widget> widgets;
+  late List<Widget> widgets;
 
   void loadWidgets() {
     widgets = [];
@@ -91,8 +90,8 @@ class AnimatedListViewState extends State<AnimatedListView>
 
   @override
   void dispose() {
-    if (controller != null) controller.dispose();
-    if (dragAnimationController != null) dragAnimationController.dispose();
+    if (controller != null) controller!.dispose();
+    dragAnimationController.dispose();
     super.dispose();
   }
 
@@ -133,7 +132,7 @@ class AnimatedListViewState extends State<AnimatedListView>
         ? itemsData.startPositions.length
         : widget.itemCount;
 
-    List<double> newStartPositions = List.filled(widget.itemCount, null);
+    List<double?> newStartPositions = List.filled(widget.itemCount, null);
     List<double> newItemsHeight = List.filled(widget.itemCount, 0);
     List<double> newItemsWidth = List.filled(widget.itemCount, 0);
 
@@ -170,21 +169,21 @@ class AnimatedListViewState extends State<AnimatedListView>
         isReversing = false;
       }
       if (status == AnimationStatus.completed) {
-        widget.onLoading();
+        widget.onLoading!();
       }
     });
   }
 
   void initScrollController() {
     controller = ScrollController();
-    controller.addListener(() {
+    controller!.addListener(() {
       if (widget.scrollAnimationDelay != null) {
-        double delayedValue = controller.offset;
-        Future.delayed(widget.scrollAnimationDelay).then((value) {
+        double delayedValue = controller!.offset;
+        Future.delayed(widget.scrollAnimationDelay!).then((value) {
           topOffsetNotifier.value = delayedValue;
         });
       } else {
-        topOffsetNotifier.value = controller.offset;
+        topOffsetNotifier.value = controller!.offset;
       }
 
       if (bottomReached) {
@@ -195,7 +194,7 @@ class AnimatedListViewState extends State<AnimatedListView>
       if (listHeight != null) {
         if (enableDrag) {
           bottomOverflow =
-              (controller.offset + itemsData.layoutHeight) - listHeight;
+              (controller!.offset + itemsData.layoutHeight!) - listHeight!;
           if (bottomOverflow < 0) bottomOverflow = 0;
 
           if (!isPulling) {
@@ -237,7 +236,7 @@ class AnimatedListViewState extends State<AnimatedListView>
     return itemsData.itemsHeight.reduce((val1, val2) => val1 + val2);
   }
 
-  double getStartPosition(int index) {
+  double? getStartPosition(int index) {
     if (index == (widget.itemCount - 1)) {
       bottomReached = true;
     }
@@ -248,7 +247,7 @@ class AnimatedListViewState extends State<AnimatedListView>
         itemsData.startPositions[index] ==
             itemsData.startPositions[index - 1] ||
         itemsData.startPositions[index] !=
-            (itemsData.startPositions[index - 1] +
+            (itemsData.startPositions[index - 1]! +
                 itemsData.itemsHeight[index - 1])) {
       double startPosition;
       if (index == 0)
@@ -283,12 +282,14 @@ class AnimatedListViewState extends State<AnimatedListView>
               startPosition: getStartPosition(index),
               child: Align(
                 child: MeasureSize(
-                    onChange: (Size size) {
+                    onChange: (Size? size) {
                       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        this.setState(() {
-                          itemsData.itemsHeight[index] = size.height;
-                          itemsData.itemsWidth[index] = size.width;
-                        });
+                        if (size != null) {
+                          this.setState(() {
+                            itemsData.itemsHeight[index] = size.height;
+                            itemsData.itemsWidth[index] = size.width;
+                          });
+                        }
                       });
                     },
                     child: widgets[index]),
@@ -314,12 +315,14 @@ class AnimatedListViewState extends State<AnimatedListView>
           startPosition: getStartPosition(index),
           child: Align(
             child: MeasureSize(
-                onChange: (Size size) {
+                onChange: (Size? size) {
                   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    this.setState(() {
-                      itemsData.itemsHeight[index] = size.height;
-                      itemsData.itemsWidth[index] = size.width;
-                    });
+                    if (size != null) {
+                      this.setState(() {
+                        itemsData.itemsHeight[index] = size.height;
+                        itemsData.itemsWidth[index] = size.width;
+                      });
+                    }
                   });
                 },
                 child: widgets[index]),

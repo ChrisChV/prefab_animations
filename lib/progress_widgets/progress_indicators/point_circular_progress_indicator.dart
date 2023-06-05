@@ -5,7 +5,7 @@ import 'package:prefab_animations/progress_widgets/custom_painters/point_circula
 class PointCircularProgressIndicator extends StatefulWidget {
   Duration duration;
   PointCircularProgressIndicator({
-                                  Key key,
+                                  Key? key,
                                   this.duration = const Duration(milliseconds: 900),
                                 }) : super(key: key);
 
@@ -14,7 +14,7 @@ class PointCircularProgressIndicator extends StatefulWidget {
 }
 
 class _PointCircularProgressIndicatorsState extends State<PointCircularProgressIndicator> with SingleTickerProviderStateMixin{
-  AnimationController controller;
+  late AnimationController controller;
 
   @override
   void initState() {

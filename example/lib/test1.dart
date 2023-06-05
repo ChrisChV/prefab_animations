@@ -9,7 +9,7 @@ import 'package:prefab_animations/event_animation/animations/vertical_appear_ani
 import 'package:prefab_animations/event_animation/event_animation.dart';
 
 class Test1 extends StatefulWidget {
-  Test1({Key key}) : super(key: key);
+  Test1({Key? key}) : super(key: key);
 
   @override
   _Test1State createState() => _Test1State();
@@ -34,25 +34,25 @@ class _Test1State extends State<Test1> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text("There are 4 animation cases", style: Theme.of(context).textTheme.title,),
+            Text("There are 4 animation cases", style: Theme.of(context).textTheme.titleMedium,),
 
             EventAnimation(
               initAnimationBuilder: (controller, child) {
-                return VerticalAppearAnimation(controller: controller, child: child,);
+                return VerticalAppearAnimation(controller: controller!, child: child,);
               },
               child: testCard("Animate on init"),
             ),
 
             EventAnimation(
               awaitAnimationBuilder: (controller, child) {
-                return BounceAnimation(controller: controller, child: child,);
+                return BounceAnimation(controller: controller!, child: child,);
               },
               child: testCard("Animate on await"),
             ),
 
             EventAnimation(
               onTapAnimationBuilder: (controller, child) {
-                return JumpAnimation(controller: controller, child: child,);
+                return JumpAnimation(controller: controller!, child: child,);
               },
               onTap: (){
                 print("Tapped");
@@ -64,9 +64,9 @@ class _Test1State extends State<Test1> {
               children: [
                 EventAnimation(
                   // stream needed to trigger animation
-                  eventStreamTrigger: changeNotifier.stream,
+
                   onEventAnimationBuilder: (controller, child) {
-                    return SpinningAnimation(controller: controller, child: child,);
+                    return SpinningAnimation(controller: controller!, child: child,);
                   },
                   onTap: (){
                     print("Tapped");
@@ -74,7 +74,7 @@ class _Test1State extends State<Test1> {
                   child: testCard("Animate on event"),
                 ),
 
-                OutlineButton(
+                OutlinedButton(
                   onPressed: (){
                     // send message through stream to animate
                     changeNotifier.add(null);

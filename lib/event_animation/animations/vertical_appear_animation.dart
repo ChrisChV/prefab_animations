@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class VerticalAppearAnimation extends AnimatedWidget {
-  Widget child;
+  Widget? child;
   double verticalOffSet;
   double minScale;
-  CurveTween scaleTween;
-  CurveTween opacityTween;
-  CurveTween translateTween;
+  CurveTween? scaleTween;
+  CurveTween? opacityTween;
+  CurveTween? translateTween;
   VerticalAppearAnimation({
-    Key key,
-    @required AnimationController controller,
+    Key? key,
+    required AnimationController controller,
     this.verticalOffSet = 25,
     this.minScale = 0.8,
     this.scaleTween,
@@ -18,7 +18,7 @@ class VerticalAppearAnimation extends AnimatedWidget {
     this.child,
   }) : super(key: key, listenable: controller);
 
-  Animation<double> get _progress => listenable;
+  Animation<double> get _progress => listenable as Animation<double>;
 
   @override
   Widget build(BuildContext context) {
@@ -27,13 +27,13 @@ class VerticalAppearAnimation extends AnimatedWidget {
     if (translateTween == null)
       translateTween = CurveTween(curve: Curves.linear);
     return Transform.scale(
-      scale: 1 - ((1 - scaleTween.evaluate(_progress)) * (1 - minScale)),
+      scale: 1 - ((1 - scaleTween!.evaluate(_progress)) * (1 - minScale)),
       child: FadeTransition(
-        opacity: opacityTween.animate(_progress),
+        opacity: opacityTween!.animate(_progress),
         child: Transform.translate(
           offset: Offset(
               0,
-              translateTween.evaluate(_progress) * verticalOffSet -
+              translateTween!.evaluate(_progress) * verticalOffSet -
                   verticalOffSet),
           child: child,
         ),

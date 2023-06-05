@@ -15,26 +15,26 @@ class EventAnimation extends StatefulWidget {
   ///
   /// the controller is provided and managed by the class and the child is
   /// the one provided
-  Function(AnimationController controller, Widget child) initAnimationBuilder;
+  Function(AnimationController? controller, Widget? child)? initAnimationBuilder;
 
   /// Builder for the await animation
   ///
   /// the controller is provided and managed by the class and the child is
   /// the one provided
-  Function(AnimationController controller, Widget child) awaitAnimationBuilder;
+  Function(AnimationController? controller, Widget? child)? awaitAnimationBuilder;
 
   /// Builder for the on tap animation
   ///
   /// the controller is provided and managed by the class and the child is
   /// the one provided
-  Function(AnimationController controller, Widget child) onTapAnimationBuilder;
+  Function(AnimationController? controller, Widget? child)? onTapAnimationBuilder;
 
   /// Builder for the init animation
   ///
   /// the controller is provided and managed by the class and the child is
   /// the one provided. Yoo need to provide [eventStreamTrigger] to trigger
   /// this animation
-  Function(AnimationController controller, Widget child)
+  Function(AnimationController? controller, Widget? child)?
       onEventAnimationBuilder;
 
   Duration initAnimationDuration;
@@ -43,21 +43,21 @@ class EventAnimation extends StatefulWidget {
   Duration onEventAnimationDuration;
 
   /// Init animation delay
-  Duration initDelay;
+  Duration? initDelay;
 
   /// Delay to trigger the [onTap] function provided
   ///
   /// by default it is set to [onTapAnimationDuration]
-  Duration onTapFunctionDelay;
+  Duration? onTapFunctionDelay;
 
   /// Function triggered on tap of the widget
-  Function onTap;
+  Function? onTap;
 
   /// controller for the event animation
   ///
   /// set broadcast to true if the controller will be used in more than
   /// one [EventAnimation]s.
-  EventAnimationController controller;
+  EventAnimationController? controller;
 
   bool onTapRepeat;
   bool awaitRepeat;
@@ -71,8 +71,8 @@ class EventAnimation extends StatefulWidget {
   bool onEventReset;
 
   EventAnimation({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.initAnimationDuration = const Duration(milliseconds: 450),
     this.awaitAnimationDuration = const Duration(milliseconds: 450),
     this.onTapAnimationDuration = const Duration(milliseconds: 150),
@@ -99,21 +99,21 @@ class EventAnimation extends StatefulWidget {
 
 class _EventAnimationState extends State<EventAnimation>
     with TickerProviderStateMixin {
-  EventAnimationState state;
-  EventAnimationState lastState;
-  AnimationController initController;
-  AnimationController awaitController;
-  AnimationController onTapController;
-  AnimationController onEventController;
+  EventAnimationState? state;
+  EventAnimationState? lastState;
+  AnimationController? initController;
+  AnimationController? awaitController;
+  AnimationController? onTapController;
+  AnimationController? onEventController;
 
-  bool animateOnInit;
-  bool animateOntap;
-  bool animateOnAwait;
-  bool animateOnEvent;
+  late bool animateOnInit;
+  late bool animateOntap;
+  late bool animateOnAwait;
+  late bool animateOnEvent;
 
-  Duration onTapFunctionDelay;
+  Duration? onTapFunctionDelay;
 
-  StreamSubscription streamSubscription;
+  late StreamSubscription streamSubscription;
 
   bool tapped = false;
   bool eventTriggered = false;
@@ -124,25 +124,25 @@ class _EventAnimationState extends State<EventAnimation>
         vsync: this, duration: widget.initAnimationDuration);
 
     if (widget.initDelay != null)
-      Future.delayed(widget.initDelay).then((_) => initController.forward());
+      Future.delayed(widget.initDelay!).then((_) => initController!.forward());
     else
-      initController.forward();
+      initController!.forward();
 
-    initController.addStatusListener((AnimationStatus status) {
+    initController!.addStatusListener((AnimationStatus status) {
       if (widget.onInitRepeat) {
         if (status == AnimationStatus.completed) {
-          initController.reverse();
+          initController!.reverse();
         } else if (status == AnimationStatus.dismissed && animateOnAwait) {
           setState(() {
             state = EventAnimationState.AWAITING;
-            awaitController.forward();
+            awaitController!.forward();
           });
         }
       } else {
         if (status == AnimationStatus.completed && animateOnAwait) {
           setState(() {
             state = EventAnimationState.AWAITING;
-            awaitController.forward();
+            awaitController!.forward();
           });
         }
       }
@@ -153,46 +153,46 @@ class _EventAnimationState extends State<EventAnimation>
     awaitController = AnimationController(
         vsync: this, duration: widget.awaitAnimationDuration);
 
-    awaitController.addStatusListener((AnimationStatus status) {
+    awaitController!.addStatusListener((AnimationStatus status) {
       if (widget.awaitRepeat) {
         if (status == AnimationStatus.completed) {
-          awaitController.reverse();
+          awaitController!.reverse();
         } else if (status == AnimationStatus.dismissed) {
-          awaitController.forward();
+          awaitController!.forward();
         }
       } else {
         if (status == AnimationStatus.completed) {
-          awaitController.reset();
-          awaitController.forward();
+          awaitController!.reset();
+          awaitController!.forward();
         }
       }
     });
 
     if (!animateOnInit) {
       state = EventAnimationState.AWAITING;
-      awaitController.forward();
+      awaitController!.forward();
     }
   }
 
   void initializeOnTap() {
     onTapController = AnimationController(
         vsync: this, duration: widget.onTapAnimationDuration);
-    onTapController.addStatusListener((status) {
+    onTapController!.addStatusListener((status) {
       if (widget.onTapRepeat) {
         if (status == AnimationStatus.completed) {
-          onTapController.reverse();
+          onTapController!.reverse();
           tapped = false;
         } else if (status == AnimationStatus.dismissed && !tapped) {
           setState(() {
             state = EventAnimationState.AWAITING;
-            onTapController.reset();
+            onTapController!.reset();
           });
         }
       } else {
         if (status == AnimationStatus.completed) {
           setState(() {
             state = EventAnimationState.AWAITING;
-            onTapController.reset();
+            onTapController!.reset();
           });
         }
       }
@@ -202,29 +202,29 @@ class _EventAnimationState extends State<EventAnimation>
   void initializeOnEvent() {
     onEventController = AnimationController(
         vsync: this, duration: widget.onEventAnimationDuration);
-    onEventController.addStatusListener((status) {
+    onEventController!.addStatusListener((status) {
       if (widget.onEventRepeat) {
         if (status == AnimationStatus.completed) {
-          onEventController.reverse();
+          onEventController!.reverse();
           eventTriggered = false;
         } else if (status == AnimationStatus.dismissed && !eventTriggered) {
           setState(() {
             state = lastState;
-            onEventController.reset();
+            onEventController!.reset();
           });
         }
       } else {
         if (status == AnimationStatus.completed) {
           setState(() {
             state = lastState;
-            if (widget.onEventReset) onEventController.reset();
+            if (widget.onEventReset) onEventController!.reset();
           });
         }
       }
     });
 
     streamSubscription =
-        widget.controller.changeNotifier.stream.listen((event) {
+        widget.controller!.changeNotifier.stream.listen((event) {
       onEvent();
     });
   }
@@ -271,11 +271,11 @@ class _EventAnimationState extends State<EventAnimation>
     super.didUpdateWidget(oldWidget);
 
     if (animateOnEvent) {
-      if (widget.controller.changeNotifier.stream !=
-          oldWidget.controller.changeNotifier.stream) {
+      if (widget.controller!.changeNotifier.stream !=
+          oldWidget.controller!.changeNotifier.stream) {
         streamSubscription.cancel();
         streamSubscription =
-            widget.controller.changeNotifier.stream.listen((_) {
+            widget.controller!.changeNotifier.stream.listen((_) {
           onEvent();
         });
       }
@@ -285,15 +285,13 @@ class _EventAnimationState extends State<EventAnimation>
 
   @override
   void dispose() {
-    if (streamSubscription != null) {
-      streamSubscription.cancel();
-      widget.controller.changeNotifier.close();
-    }
+    streamSubscription.cancel();
+    widget.controller?.changeNotifier.close();
 
-    if (onEventController != null) onEventController.dispose();
-    if (awaitController != null) awaitController.dispose();
-    if (initController != null) initController.dispose();
-    if (onTapController != null) onTapController.dispose();
+    if (onEventController != null) onEventController!.dispose();
+    if (awaitController != null) awaitController!.dispose();
+    if (initController != null) initController!.dispose();
+    if (onTapController != null) onTapController!.dispose();
     super.dispose();
   }
 
@@ -318,9 +316,9 @@ class _EventAnimationState extends State<EventAnimation>
     /// No other animations can be played
     if (state == EventAnimationState.INIT && animateOnInit) {
       return AnimatedBuilder(
-        animation: initController,
+        animation: initController!,
         builder: (context, child) {
-          return widget.initAnimationBuilder(initController, child);
+          return widget.initAnimationBuilder!(initController, child);
         },
         child: childWidget,
       );
@@ -335,9 +333,9 @@ class _EventAnimationState extends State<EventAnimation>
       /// only [awaitAnimationBuilder]
       if (!animateOntap && !animateOnEvent) {
         return AnimatedBuilder(
-          animation: awaitController,
+          animation: awaitController!,
           builder: (context, child) {
-            return widget.awaitAnimationBuilder(
+            return widget.awaitAnimationBuilder!(
               awaitController,
               child,
             );
@@ -349,9 +347,9 @@ class _EventAnimationState extends State<EventAnimation>
       /// only [onTapAnimationBuilder]
       else if (!animateOnAwait && !animateOnEvent) {
         return AnimatedBuilder(
-          animation: onTapController,
+          animation: onTapController!,
           builder: (context, child) {
-            return widget.onTapAnimationBuilder(
+            return widget.onTapAnimationBuilder!(
               onTapController,
               child,
             );
@@ -363,9 +361,9 @@ class _EventAnimationState extends State<EventAnimation>
       /// only [onEventAnimationBuilder]
       else if (!animateOnAwait && !animateOntap) {
         return AnimatedBuilder(
-          animation: onEventController,
+          animation: onEventController!,
           builder: (context, child) {
-            return widget.onEventAnimationBuilder(
+            return widget.onEventAnimationBuilder!(
               onEventController,
               child,
             );
@@ -374,14 +372,14 @@ class _EventAnimationState extends State<EventAnimation>
         );
       } else if (animateOnAwait && animateOntap && !animateOnEvent) {
         return AnimatedBuilder(
-          animation: onTapController,
+          animation: onTapController!,
           builder: (context, child) {
-            return widget.onTapAnimationBuilder(
+            return widget.onTapAnimationBuilder!(
                 onTapController,
                 AnimatedBuilder(
-                  animation: awaitController,
+                  animation: awaitController!,
                   builder: (context, child) {
-                    return widget.awaitAnimationBuilder(awaitController, child);
+                    return widget.awaitAnimationBuilder!(awaitController, child);
                   },
                   child: child,
                 ));
@@ -390,14 +388,14 @@ class _EventAnimationState extends State<EventAnimation>
         );
       } else if (animateOnAwait && !animateOntap && animateOnEvent) {
         return AnimatedBuilder(
-          animation: onEventController,
+          animation: onEventController!,
           builder: (context, child) {
-            return widget.onEventAnimationBuilder(
+            return widget.onEventAnimationBuilder!(
                 onEventController,
                 AnimatedBuilder(
-                  animation: awaitController,
+                  animation: awaitController!,
                   builder: (context, child) {
-                    return widget.awaitAnimationBuilder(
+                    return widget.awaitAnimationBuilder!(
                       awaitController,
                       child,
                     );
@@ -409,14 +407,14 @@ class _EventAnimationState extends State<EventAnimation>
         );
       } else if (!animateOnAwait && animateOntap && animateOnEvent) {
         return AnimatedBuilder(
-          animation: onEventController,
+          animation: onEventController!,
           builder: (context, child) {
-            return widget.onEventAnimationBuilder(
+            return widget.onEventAnimationBuilder!(
                 onEventController,
                 AnimatedBuilder(
-                  animation: onTapController,
+                  animation: onTapController!,
                   builder: (context, child) {
-                    return widget.onTapAnimationBuilder(onTapController, child);
+                    return widget.onTapAnimationBuilder!(onTapController, child);
                   },
                   child: child,
                 ));
@@ -425,19 +423,19 @@ class _EventAnimationState extends State<EventAnimation>
         );
       } else if (animateOnAwait && animateOntap && animateOnEvent) {
         return AnimatedBuilder(
-          animation: onEventController,
+          animation: onEventController!,
           builder: (context, child) {
-            return widget.onEventAnimationBuilder(
+            return widget.onEventAnimationBuilder!(
                 onEventController,
                 AnimatedBuilder(
-                  animation: onTapController,
+                  animation: onTapController!,
                   builder: (context, child) {
-                    return widget.onTapAnimationBuilder(
+                    return widget.onTapAnimationBuilder!(
                         onTapController,
                         AnimatedBuilder(
-                            animation: awaitController,
+                            animation: awaitController!,
                             builder: (context, child) {
-                              return widget.awaitAnimationBuilder(
+                              return widget.awaitAnimationBuilder!(
                                 awaitController,
                                 child,
                               );
@@ -453,17 +451,18 @@ class _EventAnimationState extends State<EventAnimation>
     }
 
     return AnimatedBuilder(
-      animation: onTapController,
+      animation: onTapController!,
       builder: (context, child) {
         if (state == EventAnimationState.INIT) {
-          return widget.initAnimationBuilder(initController, child);
+          return widget.initAnimationBuilder!(initController, child);
         } else if (state == EventAnimationState.AWAITING ||
             state == EventAnimationState.ON_TAP) {
-          return widget.onTapAnimationBuilder(
+          return widget.onTapAnimationBuilder!(
             onTapController,
-            widget.awaitAnimationBuilder(awaitController, child),
+            widget.awaitAnimationBuilder!(awaitController, child),
           );
         }
+        return Container(); // Empty
       },
       child: childWidget,
     );
@@ -473,17 +472,17 @@ class _EventAnimationState extends State<EventAnimation>
     if (animateOntap) {
       setState(() {
         state = EventAnimationState.ON_TAP;
-        onTapController.reset();
-        onTapController.stop();
+        onTapController!.reset();
+        onTapController!.stop();
         tapped = true;
-        onTapController.forward();
+        onTapController!.forward();
       });
     }
     if (widget.onTap != null) {
       if (onTapFunctionDelay != null)
-        Future.delayed(onTapFunctionDelay).then((value) => widget.onTap());
+        Future.delayed(onTapFunctionDelay!).then((value) => widget.onTap!());
       else
-        widget.onTap();
+        widget.onTap!();
     }
   }
 
@@ -492,9 +491,9 @@ class _EventAnimationState extends State<EventAnimation>
       setState(() {
         lastState = state;
         state = EventAnimationState.ON_EVENT;
-        onEventController.reset();
+        onEventController!.reset();
         eventTriggered = true;
-        onEventController.forward();
+        onEventController!.forward();
       });
     }
   }

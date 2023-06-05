@@ -10,7 +10,7 @@ class PointCircularProgressPainter extends CustomPainter {
 
   PointCircularProgressPainter({
                                 this.width = 5, 
-                                @required this.percent
+                                required this.percent
                               });
 
   @override

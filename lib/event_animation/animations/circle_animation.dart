@@ -4,26 +4,26 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 class CircleAnimation extends AnimatedWidget {
-  Widget child;
+  Widget? child;
 
   /// circle radius
   double r;
-  double x;
-  double y;
+  double? x;
+  double? y;
   bool clockwise;
-  bool _isForward;
-  double _angle;
-  double _value;
+  bool? _isForward;
+  late double _angle;
+  late double _value;
 
   CircleAnimation({
-    Key key,
-    @required AnimationController controller,
+    Key? key,
+    required AnimationController controller,
     this.r = 50,
     this.clockwise = true,
     this.child,
   }) : super(key: key, listenable: controller);
 
-  Animation<double> get _progress => listenable;
+  Animation<double> get _progress => listenable as Animation<double>;
 
   @override
   Widget build(BuildContext context) {

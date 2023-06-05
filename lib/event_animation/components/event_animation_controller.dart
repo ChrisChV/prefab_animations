@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class EventAnimationController {
-  StreamController<dynamic> changeNotifier;
+  late StreamController<dynamic> changeNotifier;
 
   EventAnimationController({bool broadcast = false}) {
     if (broadcast)

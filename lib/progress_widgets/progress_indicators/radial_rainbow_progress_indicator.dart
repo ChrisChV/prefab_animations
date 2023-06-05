@@ -5,7 +5,7 @@ import 'package:prefab_animations/progress_widgets/custom_painters/radial_rainbo
 class RadialRainbowProgressIndicator extends StatefulWidget {
   Duration duration;
   RadialRainbowProgressIndicator({
-                                  Key key,
+                                  Key? key,
                                   this.duration = const Duration(milliseconds: 1400),
                                 }) : super(key: key);
 
@@ -14,7 +14,7 @@ class RadialRainbowProgressIndicator extends StatefulWidget {
 }
 
 class _RadialRainbowProgressIndicatorsState extends State<RadialRainbowProgressIndicator> with SingleTickerProviderStateMixin{
-  AnimationController controller;
+  late AnimationController controller;
 
   @override
   void initState() {

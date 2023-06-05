@@ -10,7 +10,7 @@ class RadialRainbowProgressPainter extends CustomPainter {
 
   RadialRainbowProgressPainter({
                   this.width = 5, 
-                  @required this.percent
+                  required this.percent
                 });
 
   @override
@@ -79,12 +79,12 @@ class RadialRainbowProgressPainter extends CustomPainter {
   }
 
   void draw_circle_arc({
-                        @required Canvas canvas, 
-                        @required Offset center,
-                        @required double startAngle,
-                        @required double sweepAngle,
-                        @required double radius, 
-                        @required Paint paint,
+                        required Canvas canvas, 
+                        required Offset center,
+                        required double startAngle,
+                        required double sweepAngle,
+                        required double radius, 
+                        required Paint paint,
                       }){
     Offset beginPosition = polar_to_cartesian(startAngle, radius);
     Offset endPosition = polar_to_cartesian(startAngle + sweepAngle, radius);

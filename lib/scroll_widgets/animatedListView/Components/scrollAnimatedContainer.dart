@@ -8,20 +8,20 @@ class ScrollAnimatedContainer extends StatefulWidget {
   bool animateOnBottom;
   ValueNotifier<double> scrollOffsetNotifier;
   Widget child;
-  double startPosition;
+  double? startPosition;
   ItemsData itemsData;
   int index;
   ScrollAnimations animationType;
   ScrollAnimatedContainer({
-    Key key,
-    @required this.child,
-    @required this.scrollOffsetNotifier,
-    @required this.index,
-    @required this.startPosition,
-    @required this.animationType,
-    @required this.animateOnBottom,
-    @required this.animateOnTop,
-    @required this.itemsData,
+    Key? key,
+    required this.child,
+    required this.scrollOffsetNotifier,
+    required this.index,
+    required this.startPosition,
+    required this.animationType,
+    required this.animateOnBottom,
+    required this.animateOnTop,
+    required this.itemsData,
   }) : super(key: key);
 
   @override
@@ -32,10 +32,10 @@ class ScrollAnimatedContainer extends StatefulWidget {
 class Scroll_AnimatedContainerState extends State<ScrollAnimatedContainer>
     with SingleTickerProviderStateMixin {
   double scale = 1;
-  AnimationController controller;
+  late AnimationController controller;
   Animatable<double> curveTween =
       Tween<double>(begin: 0, end: 1).chain(CurveTween(curve: Curves.ease));
-  Widget myChild;
+  Widget? myChild;
   @override
   void initState() {
     myChild = widget.child;
@@ -44,11 +44,11 @@ class Scroll_AnimatedContainerState extends State<ScrollAnimatedContainer>
   }
 
   double calculateControllerValue(
-      double offset, double startPosition, double height, double layoutHeight) {
+      double offset, double startPosition, double height, double? layoutHeight) {
     if (offset > startPosition && widget.animateOnTop) {
       scale = (startPosition - (offset - height)) / height;
       if (scale > 1) scale = 1;
-    } else if ((offset + layoutHeight - height) < startPosition &&
+    } else if ((offset + layoutHeight! - height) < startPosition &&
         widget.animateOnBottom) {
       scale = (startPosition - (offset + layoutHeight - height)) / height;
       if (scale > 1) scale = 1;
@@ -67,7 +67,7 @@ class Scroll_AnimatedContainerState extends State<ScrollAnimatedContainer>
       builder: (context, value, child) {
         controller.value = calculateControllerValue(
             value,
-            widget.itemsData.startPositions[widget.index],
+            widget.itemsData.startPositions[widget.index]!,
             widget.itemsData.itemsHeight[widget.index],
             widget.itemsData.layoutHeight);
         return AnimatedBuilder(
